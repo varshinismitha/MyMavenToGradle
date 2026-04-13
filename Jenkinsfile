@@ -1,48 +1,26 @@
-pipeline {
-    agent any  // Use any available agent
+plugins {
+    id 'java'
+    id 'application'   // ✅ REQUIRED for run
+}
 
-    tools {
-        gradle 'Gradle'  // Ensure this matches the name configured in Jenkins
-        jdk 'JDK'
-    }
-    stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'master', url: 'https://github.com/varshinismitha/MyMavenToGradle.git'
-            }
-        }
+group = 'com.example'
+version = '1.0-SNAPSHOT'
 
-        stage('Build') {
-            steps {
-                sh 'gradle build'  // Run Gradle build
-            }
-        }
+description = "MyMavenApp"
 
-        stage('Test') {
-            steps {
-                sh 'gradle test'  // Run unit tests
-            }
-        }
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
 
-        
-        
-       
-        stage('Run Application') {
-            steps {
-                // Start the JAR application
-                sh 'gradle run'
-            }
-        }
+repositories {
+    mavenCentral()
+}
 
-        
-    }
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+}
 
-    post {
-        success {
-            echo 'Build and deployment successful!'
-        }
-        failure {
-            echo 'Build failed!'
-        }
-    }
+application {
+    mainClass = 'com.example.App'   // ⚠️ change if needed
 }
