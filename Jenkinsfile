@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'application'   // ✅ REQUIRED for run
+    id 'application'   
 }
 
 group = 'com.example'
@@ -22,5 +22,5 @@ dependencies {
 }
 
 application {
-    mainClass = 'com.example.App'   // ⚠️ change if needed
+    mainClass = 'com.example.App'  
 }
