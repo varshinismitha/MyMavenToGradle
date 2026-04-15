@@ -1,26 +1,55 @@
-plugins {
-    id 'java'
-    id 'application'   
-}
+pipeline {
+    agent any
 
-group = 'com.example'
-version = '1.0-SNAPSHOT'
+    tools {
+        maven 'Maven'
+        gradle 'Gradle'
+        jdk 'JDK'
+    }
 
-description = "MyMavenApp"
+    stages {
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
+        stage('Checkout') {
+            steps {
+                git branch: 'master', url: 'https://github.com/YashwanthK18/maven-to-gradle.git'
+            }
+        }
 
-repositories {
-    mavenCentral()
-}
+        // OPTIONAL: only if you still want Maven build
+        stage('Build with Maven') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
 
-dependencies {
-    testImplementation 'junit:junit:4.13.2'
-}
+        // Build using Gradle
+        stage('Build with Gradle') {
+            steps {
+                sh 'gradle clean build'
+            }
+        }
 
-application {
-    mainClass = 'com.example.App'  
+        // Run Tests
+        stage('Test') {
+            steps {
+                sh 'gradle test'
+            }
+        }
+
+        // Run Application (now it will work ✅)
+        stage('Run Application') {
+            steps {
+                sh 'gradle run'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline executed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
 }
